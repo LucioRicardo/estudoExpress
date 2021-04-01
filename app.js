@@ -24,22 +24,34 @@ app.post('/projetos', (req, res) => {
 });
 
 app.put('/projetos/:id', (req, res) => {
-    const params = req.params;
+    const { id } = req.params;
+    const { title, owner } = req.body;
 
-    console.log(params);
+    const projetoIndex = projetos.findIndex(projeto => projeto.id === id);
+
+    if(projetoIndex < 0){
+        return res.status(400).json({error : 'Projeto não encontrado'})
+    }
+
+    const projeto = { id, title, owner };
+
+    projetos[projetoIndex] = projeto;
     
-    return res.json([
-        'Projeto 51',
-        'Projeto 2',
-        'Projeto 3'
-    ]);
+    return res.json(projeto);
 });
 
 app.delete('/projetos/:id', (req, res) => {
-    return res.json([
-        'Projeto 1',
-        'Projeto 2'
-    ]);
+    const { id } = req.params;
+
+    const projetoIndex = projetos.findIndex(projeto => projeto.id === id);
+
+    if(projetoIndex < 0){
+        return res.status(400).json({ error: 'Projeto não encontrado'});
+    }
+
+    projetos.splice(projetoIndex, 1);
+    
+    return res.status(204).send();
 });
 
 app.listen(3000, () => {
